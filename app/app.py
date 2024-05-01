@@ -7,35 +7,40 @@ import re
 # Create a Docker client instance
 client = docker.from_env()
 
+# Define a function to extract FQDNs from Traefik labels
+
+
+def extract_fqdns_from_labels(labels):
+  traefik_host_labels = {k: v for k, v in labels.items() if k.startswith('traefik.http.routers.')}
+  fqdns = []
+  for label_key, label_value in traefik_host_labels.items():
+    match = re.search(r'rule=Host\(`(.+?)`\)', label_value)
+    if match:
+      fqdn = match.group(1)
+      fqdns.append(fqdn)
+  return fqdns
 
 # Define a callback function to handle events
+
+
 def event_callback(event):
-  if event["Action"] == "start":
-    container_name = event["Actor"]["Attributes"]["name"]
+  if event['Action'] == 'start':
+    container_name = event['Actor']['Attributes']['name']
     container = client.containers.get(container_name)
     labels = container.labels
+    fqdns = extract_fqdns_from_labels(labels)
 
-    traefik_host_labels = {
-      k: v for k, v in labels.items() if k.startswith("traefik.http.routers.")
-    }
-
-    if traefik_host_labels:
-      fqdns = []
-      for label_key, label_value in traefik_host_labels.items():
-        match = re.search(r"rule=Host\(`(.+?)`\)", label_value)
-        if match:
-          fqdn = match.group(1)
-          fqdns.append(fqdn)
-
+    if fqdns:
       print(f"Container {container_name} started with Traefik FQDNs: {', '.join(fqdns)}")
     else:
       print(f"Container {container_name} started without Traefik host labels.")
 
-  elif event["Action"] == "stop":
+  elif event['Action'] == 'stop':
     print(f"Container {event['Actor']['Attributes']['name']} stopped.")
 
-
 # Define a signal handler function
+
+
 def signal_handler(signal, frame):
   print("Received signal, stopping event listener...")
   sys.exit(0)
@@ -44,6 +49,15 @@ def signal_handler(signal, frame):
 # Set up signal handlers
 signal.signal(signal.SIGTERM, signal_handler)
 signal.signal(signal.SIGINT, signal_handler)
+
+# Get running containers with Traefik labels on startup
+print("Fetching running containers with Traefik labels...")
+running_containers = client.containers.list(filters={'status': 'running'})
+for container in running_containers:
+  labels = container.labels
+  fqdns = extract_fqdns_from_labels(labels)
+  if fqdns:
+    print(f"Container {container.name} is running with Traefik FQDNs: {', '.join(fqdns)}")
 
 # Start listening for events
 print("Listening for Docker events...")
