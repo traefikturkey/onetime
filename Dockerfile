@@ -23,8 +23,8 @@ ENV PYTHONPATH="${PYTHONPATH}:${PYTHON_DEPS_PATH}"
 ENV PYTHONUNBUFFERED=TRUE
 
 ENV LANGUAGE=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
-ENV LC_ALL=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN=true
 
@@ -45,6 +45,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     tzdata \
     zsh && \
+    # locales
+    echo "$(LANGUAGE)" > /etc/locale.gen && \
+    locale-gen en_US.UTF-8 && \
     # cleanup
     apt-get autoremove -fy && \
     apt-get clean && \
@@ -191,8 +194,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/* 
 
 
+
 RUN echo ${USER} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USER} && \
-    chmod 0440 /etc/sudoers.d/${USER} 
+    chmod 0440 /etc/sudoers.d/${USER} && \
+    chown ${USER} /var/run/docker.sock
 
 USER ${USER}
 

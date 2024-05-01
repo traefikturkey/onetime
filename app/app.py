@@ -1,70 +1,38 @@
-import docker
 import time
 import signal
 import sys
-import re
+from docker_monitor import DockerMonitor
 
-# Create a Docker client instance
-client = docker.from_env()
-
-# Define a function to extract FQDNs from Traefik labels
+monitor = None
 
 
-def extract_fqdns_from_labels(labels):
-  traefik_host_labels = {k: v for k, v in labels.items() if k.startswith('traefik.http.routers.')}
-  fqdns = []
-  for label_key, label_value in traefik_host_labels.items():
-    match = re.search(r'rule=Host\(`(.+?)`\)', label_value)
-    if match:
-      fqdn = match.group(1)
-      fqdns.append(fqdn)
-  return fqdns
-
-# Define a callback function to handle events
-
-
-def event_callback(event):
-  if event['Action'] == 'start':
-    container_name = event['Actor']['Attributes']['name']
-    container = client.containers.get(container_name)
-    labels = container.labels
-    fqdns = extract_fqdns_from_labels(labels)
-
-    if fqdns:
-      print(f"Container {container_name} started with Traefik FQDNs: {', '.join(fqdns)}")
-    else:
-      print(f"Container {container_name} started without Traefik host labels.")
-
-  elif event['Action'] == 'stop':
-    print(f"Container {event['Actor']['Attributes']['name']} stopped.")
-
-# Define a signal handler function
-
-
-def signal_handler(signal, frame):
-  print("Received signal, stopping event listener...")
+def signal_handler(received_signal: signal.Signals, frame):
+  print(f"\nReceived signal: {signal.Signals(received_signal).name}, stopping event listener...")
+  if monitor:
+    monitor.stop()
   sys.exit(0)
 
 
-# Set up signal handlers
-signal.signal(signal.SIGTERM, signal_handler)
-signal.signal(signal.SIGINT, signal_handler)
+def main():
+    # Set up signal handlers
+  signal.signal(signal.SIGTERM, signal_handler)
+  signal.signal(signal.SIGINT, signal_handler)
 
-# Get running containers with Traefik labels on startup
-print("Fetching running containers with Traefik labels...")
-running_containers = client.containers.list(filters={'status': 'running'})
-for container in running_containers:
-  labels = container.labels
-  fqdns = extract_fqdns_from_labels(labels)
-  if fqdns:
-    print(f"Container {container.name} is running with Traefik FQDNs: {', '.join(fqdns)}")
+  # Create a DockerMonitor instance
+  global monitor
+  monitor = DockerMonitor()
 
-# Start listening for events
-print("Listening for Docker events...")
-try:
-  for event in client.events(decode=True):
-    event_callback(event)
-    # Flush the output buffer to ensure the message is printed immediately
-    time.sleep(0.1)
-except KeyboardInterrupt:
-  print("Keyboard interrupt received, stopping event listener...")
+  # Start the event listener in a separate thread
+  event_thread = monitor.start()
+
+  try:
+    # Keep the main thread alive
+    while True:
+      pass
+  except KeyboardInterrupt:
+    print("Keyboard interrupt received, stopping event listener...")
+    monitor.stop()
+
+
+if __name__ == "__main__":
+  main()
