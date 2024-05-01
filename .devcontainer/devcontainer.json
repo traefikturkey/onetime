@@ -65,7 +65,7 @@
         "dev.containers.copyGitConfig": false,
         "dev.containers.gitCredentialHelperConfigLocation": "system",
         "files.readonlyFromPermissions": true,
-        "python.analysis.extraPaths": [ "${containerWorkspaceFolder}/app" ],
+        "python.analysis.extraPaths": [ "${containerWorkspaceFolder}/app" ]
       }
     }
   }
