@@ -1,0 +1,42 @@
+{
+  "cSpell.words": [
+    "accesslog",
+    "apscheduler",
+    "azuretools",
+    "cachelib",
+    "cssless",
+    "devcontainer",
+    "htmx",
+    "HTMX",
+    "hykin",
+    "hypercorn",
+    "iframe",
+    "Instapundit",
+    "JSONIFY",
+    "langchain",
+    "llms",
+    "mikestead",
+    "Monero",
+    "mustexist",
+    "nologo",
+    "ollama",
+    "Ollama",
+    "OLLAMA",
+    "pwsh",
+    "Slickdeals",
+    "Tailscale",
+    "Thingiverse",
+    "yamlpath",
+    "zcompdump"
+  ],
+  "python.analysis.extraPaths": [
+    "./app"
+  ],
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.webassets-cache": true,
+    "**/*.pyc": {
+      "when": "$(basename).py"
+    }
+  }
+}

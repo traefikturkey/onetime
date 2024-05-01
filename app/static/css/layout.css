@@ -1,0 +1,47 @@
+/* Reset and Basics */
+html, body {
+  width: 100%; 
+  height: 100%; 
+  margin: 0; 
+  padding: 0;
+}
+
+/* Body Styles */
+body {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  background-color: #fff;
+  color: #333;
+  font-family: Roboto Regular,Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+}
+
+.container {
+  display: flex;
+	flex: 1 0 auto;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+/* Row */
+.row {
+  display: flex;
+  --num-columns: var(--child-count, 3);
+}
+
+/* Columns and Rows */
+.column {
+  flex: 1;
+  width: calc(100% / var(--num-columns));
+}
+
+.content {
+  height: 100%;
+}
+
+footer {
+  /* Set the footer to the bottom of the browsers window */
+  width: 100%;
+  margin-top: auto;
+  text-align: center;
+}

@@ -1,0 +1,22 @@
+{
+    "version": "0.2",
+    "ignorePaths": [],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "words": [
+        "codeium",
+        "dont",
+        "esbenp",
+        "evander",
+        "fabianlauer",
+        "galt",
+        "mafen",
+        "pycache",
+        "rearden",
+        "traefikturkey",
+        "vsicons",
+        "webassets"
+    ],
+    "ignoreWords": [],
+    "import": []
+}

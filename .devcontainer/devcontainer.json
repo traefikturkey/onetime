@@ -1,0 +1,65 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/alpine
+{
+  "name": "${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "containerEnv": {
+    "HOST_PROJECT_PATH": "${localWorkspaceFolder}",
+    "PROJECT_NAME": "${localWorkspaceFolderBasename}",
+    "PROJECT_PATH": "${containerWorkspaceFolder}",
+    "FLASK_DEBUG": "True",
+    "ANSIBLE_LOCALHOST_WARNING": "False",
+    "ANSIBLE_INVENTORY_UNPARSED_WARNING": "False"
+  },
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "build": { 
+    "context": "..",
+    "dockerfile": "../Dockerfile",
+    "target": "devcontainer",
+    "args": {
+      "PROJECT_NAME": "${localWorkspaceFolderBasename}",
+      "PROJECT_PATH": "${containerWorkspaceFolder}"
+    }
+  },
+  "initializeCommand": "touch ${localWorkspaceFolder}/.devcontainer/.env",
+  "updateContentCommand": "make ansible",
+  "runArgs": ["--name","${localWorkspaceFolderBasename}_devcontainer", "--hostname","${localWorkspaceFolderBasename}", "--env-file",".devcontainer/.env", "--gpus","all"],
+  "mounts": [
+    "source=${localWorkspaceFolderBasename}-home,target=/home/anvil,type=volume",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/anvil/.ssh,type=bind,consistency=cached",
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+
+  //Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "jeff-hykin.better-dockerfile-syntax",
+        "ms-vsliveshare.vsliveshare",
+        "mikestead.dotenv",
+        "EditorConfig.EditorConfig",
+        "redhat.vscode-yaml",
+        "codeium.codeium",
+        "ms-toolsai.jupyter",
+        "streetsidesoftware.code-spell-checker",
+        "eamodio.gitlens",
+        "nhoizey.gremlins",
+        "esbenp.prettier-vscode",
+        "peakchen90.open-html-in-browser"
+      ],
+      "settings": {
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/.webassets-cache": true,
+          "**/*.pyc": {
+            "when": "$(basename).py"
+          }
+        },
+        "dev.containers.copyGitConfig": false,
+        "dev.containers.gitCredentialHelperConfigLocation": "system",
+        "files.readonlyFromPermissions": true,
+        "python.analysis.extraPaths": [ "${containerWorkspaceFolder}/app" ],
+      }
+    }
+  }
+}

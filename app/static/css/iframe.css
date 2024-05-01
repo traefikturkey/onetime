@@ -1,0 +1,20 @@
+.iframe-container {
+  display: flex; 
+  width:  100vw; 
+  min-height: 100vh; 
+  flex-direction: column; 
+  overflow: hidden;
+}
+
+.iframe-container::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+iframe {
+  flex-grow: 1; 
+  border: none; 
+  margin: 0; 
+  padding: 0;
+  overflow: hidden;
+}
