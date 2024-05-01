@@ -195,6 +195,10 @@ RUN echo ${USER} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USER} && \
     chmod 0440 /etc/sudoers.d/${USER} 
 
 USER ${USER}
+
+COPY --chown=${USER}:${USER} .devcontainer/ansible ${PROJECT_PATH}/.devcontainer/ansible
+RUN LC_ALL=C.UTF-8 ansible-playbook --inventory 127.0.0.1 --connection=local .devcontainer/ansible/requirements.yml && \
+    LC_ALL=C.UTF-8 ansible-playbook --inventory 127.0.0.1 --connection=local .devcontainer/ansible/setup-docker.yml
   
 # https://code.visualstudio.com/remote/advancedcontainers/start-processes#_adding-startup-commands-to-the-docker-image-instead
 CMD [ "sleep", "infinity" ]

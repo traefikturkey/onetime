@@ -6,6 +6,7 @@
     "cachelib",
     "cssless",
     "devcontainer",
+    "geerlingguy",
     "htmx",
     "HTMX",
     "hykin",
@@ -29,14 +30,4 @@
     "yamlpath",
     "zcompdump"
   ],
-  "python.analysis.extraPaths": [
-    "./app"
-  ],
-  "files.exclude": {
-    "**/__pycache__": true,
-    "**/.webassets-cache": true,
-    "**/*.pyc": {
-      "when": "$(basename).py"
-    }
-  }
 }
