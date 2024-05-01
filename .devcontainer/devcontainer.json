@@ -23,7 +23,7 @@
   },
   "initializeCommand": "touch ${localWorkspaceFolder}/.devcontainer/.env",
   "updateContentCommand": "make ansible",
-  "runArgs": ["--name","${localWorkspaceFolderBasename}_devcontainer", "--hostname","${localWorkspaceFolderBasename}", "--env-file",".devcontainer/.env", "--gpus","all"],
+  "runArgs": ["--name","${localWorkspaceFolderBasename}_devcontainer", "--hostname","${localWorkspaceFolderBasename}", "--env-file",".devcontainer/.env"],
   "mounts": [
     "source=${localWorkspaceFolderBasename}-home,target=/home/anvil,type=volume",
     "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/anvil/.ssh,type=bind,consistency=cached",
