@@ -1,0 +1,28 @@
+. {
+    errors
+    health {
+        lameduck 5s
+    }
+    ready
+    kubernetes cluster.local in-addr.arpa ip6.arpa {
+        pods insecure
+        fallthrough in-addr.arpa ip6.arpa
+    }
+    {% if active_fqdns %}
+    hosts {
+        {% for fqdn in active_fqdns %}
+        {{ fqdn }} {
+            rcode NXDOMAIN
+        }
+        {% endfor %}
+        fallthrough
+    }
+    {% endif %}
+    forward . /etc/resolv.conf {
+        max_concurrent 1000
+    }
+    cache 30
+    loop
+    reload
+    loadbalance
+}

@@ -26,7 +26,7 @@ class CorefileGenerator:
   def __init__(self, template_path: str):
     self.template_path = template_path
     self.active_fqdns: Set[str] = set()
-    self.env = Environment(loader=FileSystemLoader('/path/to/templates'))
+    self.env = Environment(loader=FileSystemLoader('templates'))
 
   def process_event(self, event: docker.Event):
     fqdn_name = event.fqdn_name
